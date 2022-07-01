@@ -27,6 +27,29 @@ html, body {
 
 canvas {
 
+  z-index: 3;
+  padding: 0;
+  margin: auto;
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border-radius: 30px;
+  border: 3px solid var(--accent-1);
+  
+}
+
+rect {
+
+  position: absolute;
+
+}
+
+#plot {
+
+  z-index: 2;
   padding: 0;
   margin: auto;
   display: block;
@@ -36,7 +59,15 @@ canvas {
   left: 0;
   right: 0;
   border-radius: 10px;
-  
+  /* transform: translate(0%, -5.5%); */
+
+}
+
+#modebar {
+
+  display: none;
+  visibility: hidden;
+
 }
 
 noscript {

@@ -7,17 +7,18 @@ function setup () {
 
   createCanvas(1200, 650);
   canvas = document.getElementById("defaultCanvas0").getContext("2d");
-  canvas.font = "30px " + defaultFont.fontName;
+  document.getElementById("plot").style.width = width + "px";
+  document.getElementById("plot").style.height = height + "px";
 
   player = new Player("player", game.colors[floor(random(game.colors.length))]);
   game.players.push(player);
 
   createInputAndButton("fire", "y = ");
 
-  background(ACCENT_2);
-
   drawGrid();
   drawEntities();
+
+  graph("x");
 
 }
 
@@ -32,7 +33,7 @@ function draw () {
 
 function drawGrid () {
 
-  for (var x = 0; x < width; x += game.cellSize) {
+  for (var x = game.cellSize; x < width; x += game.cellSize) {
 
     stroke(ACCENT_1);
     strokeWeight(1);
@@ -40,7 +41,7 @@ function drawGrid () {
 
   }
 
-  for (var y = 0; y < height; y += game.cellSize) {
+  for (var y = game.cellSize; y < height; y += game.cellSize) {
 
     stroke(ACCENT_1);
     strokeWeight(1);
@@ -61,32 +62,100 @@ function drawEntities () {
 
 }
 
-function graph (expression) {
+function graph (input) {
 
-  background(ACCENT_2);
+  try {
 
-  drawGrid();
-  drawEntities();
+    const expression = math.compile(input);
 
-  console.log("graphing " + expression);
+    const xValues = math.range(0, (width - player.x) / game.cellSize, 0.01).toArray();
+    const yValues = xValues.map(function (x) { return expression.evaluate( { x : x } ) });
 
-  var x = width;
-  var y = eval(expression);
+    const trace1 = {
 
-  console.log(y);
-  
-  smooth();
-  stroke(player.color);
-  strokeWeight(3);
+      x: xValues,
+      y: yValues,
+      type: "scatter"
 
-  console.log("from (" + player.x + ", " + player.y + ") to (" + width + ", " + y + ")");
-  line(player.x, player.y,  player.x + width, player.y - y);
+    };
 
+    const data = [trace1];
 
-  player.render();
-  player.inform();
+    const layout = {
 
-  return expression;
+      paper_bgcolor: "rgba(0,0,0,0)",
+
+      plot_bgcolor: "rgba(0,0,0,0)",
+
+      mode: 'lines',
+
+      xaxis: {
+
+        autorange: true,
+        showgrid: false,
+        zeroline: false,
+        showline: false,
+        autotick: true,
+        ticks: "",
+        showticklabels: false,
+        fixedrange: true
+
+      },
+
+      yaxis: {
+
+        autorange: true,
+        showgrid: false,
+        zeroline: false,
+        showline: false,
+        autotick: true,
+        ticks: "",
+        showticklabels: false,
+        fixedrange: true
+
+      },
+
+      line: {
+
+        color: "rgb(234, 153, 153)",
+        width: 10
+
+      },
+
+      width: 350,
+      height: 350,
+
+      margin: {
+
+        l: 0,
+        r: 0,
+        t: 0,
+        b: 0
+
+      },
+
+      dragmode: false,
+      hovermode: false,
+      clickmode: false,
+      itemclick: false,
+      itemdoubleclick: false,
+
+    }
+
+    Plotly.newPlot("plot", data, layout);
+
+    document.getElementsByClassName("modebar")[0].style.display = "none";
+    document.getElementsByTagName("svg")[0].style.left = player.x + "px";
+    document.getElementsByTagName("svg")[0].style.transform = "translateY(" + (90) + "px)";
+
+    player.render();
+    player.inform();
+
+    return input;
+
+  }
+
+  catch (err) { console.error(err); alert(err); }
 
 }
 

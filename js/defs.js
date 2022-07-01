@@ -13,7 +13,7 @@ window.addEventListener("resize", function (ignored) {
 
 // site
 var title = "grapher";
-var version = "version 1.0.0";
+var version = "version 1.0.1";
 
 window.onload = function () { document.title = title; document.getElementById("title").innerHTML = title + "  <span style=\"font-size: 30px;\"> " + version + "<\span>"; }
 

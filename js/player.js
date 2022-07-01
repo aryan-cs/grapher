@@ -24,7 +24,7 @@ class Player {
     inform () {
 
         noStroke();
-        fill(BACKGROUND_COLOR);
+        fill(ACCENT_2);
         textFont(defaultFont, 15);
         textAlign(CENTER, BOTTOM)
         text(this.name, this.x, this.y - this.radius / 1.5);
